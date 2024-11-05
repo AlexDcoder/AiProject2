@@ -115,14 +115,30 @@ class Regression:
         return [np.mean(results_model),
                 np.std(results_model),
                 np.max(results_model),
-                np.mean(results_model)]
+                np.min(results_model)]
+
+    def polynomial_fit(self, degree=5):
+        # Ajuste polinomial para seguir o formato do gráfico
+        # A função polyfit retorna os coeficientes do polinômio
+        coef = np.polyfit(self.x.flatten(), self.y.flatten(), degree)
+        return np.poly1d(coef)
 
     def show_graphic(self):
-        # Mostrar gráfico
+        # Mostrar gráfico com a curva de ajuste polinomial
         plt.figure(1)
-        plt.scatter(self.x, self.y, edgecolors='k', alpha=0.5)
+        plt.scatter(self.x, self.y, edgecolors='k', alpha=0.5, label='Dados')
+
+        # Gerando a curva de ajuste polinomial
+        poly_model = self.polynomial_fit()
+        x_line = np.linspace(self.x.min(), self.x.max(), 100)
+        y_line = poly_model(x_line)
+
+        # Plot da linha de ajuste polinomial
+        plt.plot(x_line, y_line, color='red',
+                 label='Linha da função estimada')
         plt.xlabel('Velocidade do vento')
         plt.ylabel('Potência gerada pelo aerogerador')
+        plt.legend()
         plt.show()
 
 
